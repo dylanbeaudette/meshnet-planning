@@ -1,12 +1,17 @@
 library(igraph)
 library(stringi)
 
+source('local-functions.R')
 
 # data collected from MeshSense ----
 # https://affirmatech.com/meshsense
 # set logfile to 100000 lines
 # ran 10pm -> 6am
 x <- read.csv('mesh-sense-logs/2026-03-09.csv')
+
+# node database from meshtastic CLI
+db <- parseNodeData('node-db-files/OxFC.txt')
+
 
 
 # review contents ----
@@ -49,6 +54,7 @@ e <- grepl('traceroute', x$Type, ignore.case = TRUE) & x$Hops != '' & x$SNR != '
 idx <- which(e)
 z <- x[idx, ]
 
+
 # routes -> matrix
 r <- stri_split_fixed(z$Data, pattern = ' -> ', simplify = FALSE)
 
@@ -67,6 +73,18 @@ g <- graph_from_edgelist(e, directed = TRUE)
 
 # remove loops
 g <- simplify(g)
+
+# lookup names
+nm <- V(g)$name
+# just IDs to convert
+n <- nm[grep('^[!]', nm)]
+
+# replace IDs with names
+idx <- na.omit(match(n, db$ID))
+lut <- db[idx, c('ID', 'AKA')]
+
+nm[match(lut$ID, nm)] <- lut$AKA
+V(g)$name <- nm
 
 # size ~ connectivity
 V(g)$size <- sqrt(degree(g)) * 10
