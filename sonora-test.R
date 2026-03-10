@@ -3,19 +3,31 @@ library(rgrass)
 library(purrr)
 library(igraph)
 
+## randomized points
 # g.region res=16 -ap
 # v.random --overwrite output=pts npoints=20
-
+# 
 # n <- 75
-execGRASS('g.region', flags = c('a', 'p'), res = '32')
 # execGRASS('v.random', flags = 'overwrite', npoints = n, output = 'pts')
 
-# digitized these
-v <- read_VECT('pts')
-xy <- crds(v)
 
+## hand-digitized points
+# v <- read_VECT('pts')
+
+## real coordinates
+v <- read.csv('local-nodes.csv')
+
+v <- vect(v, geom = c('long', 'lat'), crs = 'epsg:4326')
+v <- project(v, crs(e.utm))
+v$height_m <- v$height_ft * 0.3048
+
+write_VECT(v, vname = 'pts', flags = 'overwrite')
+
+# extract coordinates for r.viewshed
+xy <- crds(v)
 n <- nrow(v)
 
+execGRASS('g.region', flags = c('a', 'p'), raster = 'elev60')
 execGRASS('g.remove', flags = 'f', type = 'raster', pattern = 'vs_*')
 
 walk(1:n, .progress = TRUE, .f = function(i) {
@@ -26,7 +38,7 @@ walk(1:n, .progress = TRUE, .f = function(i) {
   execGRASS(
     cmd = 'r.viewshed', 
     flags = c('c', 'r', 'b', 'overwrite'), 
-    input = 'elev', 
+    input = 'elev60', 
     output = .map, 
     coordinates = .coords, 
     observer_elevation = 3, 
@@ -53,16 +65,18 @@ text(v, pos = 3)
 # remove points + maps where LOS is all 0
 
 e <- extract(x, v)
-row.names(e) <- r.names
+# row.names(e) <- r.names
 
 m <- as.matrix(e[, -1])
+dimnames(m)[[1]] <- v$node
+dimnames(m)[[2]] <- v$node
 
-saveRDS(m, file = 'pts-adjmat.rds')
+saveRDS(m, file = 'local-data/pts-adjmat.rds')
 
 
-g <- graph_from_adjacency_matrix(m, mode = 'lower', diag = FALSE, add.colnames = TRUE, weighted = TRUE)
+g <- graph_from_adjacency_matrix(m, mode = 'lower', diag = FALSE, weighted = TRUE)
 
-V(g)$size <- sqrt(degree(g)) * 5
+V(g)$size <- sqrt(degree(g)) * 20
 
 par(mar = c(0, 0, 0, 0))
 
@@ -77,6 +91,8 @@ s <- sum(x)
 plot(s, axes = FALSE, col = c('grey', hcl.colors(25, palette = 'mako')))
 points(v, col = 2)
 
+write_RAST(s, vname = 's', flags = 'overwrite')
+execGRASS('r.null', map = 's', setnull = '0')
 
 
 el <- as_edgelist(g)

@@ -12,7 +12,7 @@ a <- vect(wkt, crs = 'epsg:4326')
 # ~ 30m (z = 11)
 # ~ 8m (z = 13)
 # ~ 4m (z = 14)
-e <- get_elev_raster(st_as_sf(a), z = 11)
+e <- get_elev_raster(st_as_sf(a), z = 10)
 
 # convert to spatRaster
 e <- rast(e)
@@ -24,11 +24,15 @@ e.utm <- terra::project(e, 'epsg:32610', method = 'cubicspline')
 
 
 # save
-terra::writeRaster(e.utm, filename = 'local-data/elev-30m.tif', overwrite = TRUE, gdal = list('COMPRESS=LZW'))
+terra::writeRaster(e.utm, filename = 'local-data/elev-60m.tif', overwrite = TRUE, gdal = list('COMPRESS=LZW'))
 
 
 
-# r.in.gdal in=local-data\elev-60m.tif out=elev60 --overwrite
+# r.in.gdal in=local-data/elev-60m.tif out=elev60 --overwrite
 # g.region -ap rast=elev60
 # r.relief --overwrite input=elev60@PERMANENT out=shade60
+
+
+
+
 
