@@ -1,0 +1,78 @@
+library(igraph)
+library(stringi)
+
+
+# data collected from MeshSense ----
+# https://affirmatech.com/meshsense
+# set logfile to 100000 lines
+# ran 10pm -> 6am
+x <- read.csv('mesh-sense-logs/2026-03-09.csv')
+
+
+# review contents ----
+# looks like the entire time period is represented
+head(x)
+tail(x)
+nrow(x)
+
+# looks like we can use the message type to filter
+table(x$Channel)
+table(x$SNR)
+table(x$Type)
+table(x$Hops)
+
+
+# mixture of successful and unsuccessful ? connections?
+e <- grepl(' to ', x$Nodes, fixed = TRUE) & x$Hops != ''
+idx <- which(e)
+x[idx, ]
+
+
+# I think that these are successfull routes
+e <- grepl('traceroute', x$Type, ignore.case = TRUE) & x$Hops != ''
+idx <- which(e)
+x[idx, ]
+
+# successful message traffic, I think
+e <- x$Hops != ''
+idx <- which(e)
+x[idx, ]
+
+
+
+ 
+# keep successful routes ----
+e <- grepl('traceroute', x$Type, ignore.case = TRUE) & x$Hops != ''
+idx <- which(e)
+z <- x[idx, ]
+
+# routes -> matrix
+r <- stri_split_fixed(z$Data, pattern = ' -> ', simplify = FALSE)
+
+toEdgeList <- function(i) {
+  # reduce to graph edges via sliding window
+  .el <- sapply(1:(length(i) - 1), \(j) cbind(i[j], i[j+1]))
+  t(.el)
+}
+
+# convert route matrix to edge list
+e <- lapply(r, FUN = toEdgeList)
+e <- do.call('rbind', e)
+
+# create and style graph ----
+g <- graph_from_edgelist(e, directed = TRUE)
+
+# remove loops
+g <- simplify(g)
+
+# size ~ connectivity
+V(g)$size <- sqrt(degree(g)) * 10
+
+
+par(mar = c(0, 0, 0, 0))
+
+set.seed(1010101)
+plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, vertex.label.cex = 0.66, edge.arrow.size = 0.5, edge.color = 'royalblue', layout = layout_with_dh)
+
+
+
