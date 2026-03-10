@@ -1,0 +1,22 @@
+
+
+## CLI tools
+ - https://github.com/iandennismiller/fmesh
+ - https://github.com/pdxlocations/contact
+ - https://github.com/ethzero/meshtastic-live-node-list
+
+## setup meshtastic CLI
+ - https://meshtastic.org/docs/software/python/cli/
+ - add to dialout group
+ - serial interface on /dev/ttyACM0
+
+## Notes
+ - best CLI interface seems to be contact
+ - dump node DB: meshtastic --nodes > file
+ - https://vftp.net/N0ZYC/radio/meshtastic/nodes/node%20resources/meshtastic%20CLI/
+
+
+## Ideas
+ - long-term monitoring -> logging -> analysis
+ - CLI chat / interaction with nodes vs. phone
+
