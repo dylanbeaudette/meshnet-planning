@@ -4,6 +4,9 @@
  - https://github.com/iandennismiller/fmesh
  - https://github.com/pdxlocations/contact
  - https://github.com/ethzero/meshtastic-live-node-list
+ - https://www.reddit.com/r/meshtastic/comments/190bw6c/guide_to_install_the_python_cli_and_configure/
+ - https://github.com/datagod/meshwatch
+ - https://meshtastic.org/docs/software/linux/usage/
 
 ## setup meshtastic CLI
  - https://meshtastic.org/docs/software/python/cli/
