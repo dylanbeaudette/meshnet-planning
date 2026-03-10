@@ -22,13 +22,16 @@ table(x$Type)
 table(x$Hops)
 
 
+# are these MQTT messages?
+x[x$SNR == 'MQTT', ]
+
 # mixture of successful and unsuccessful ? connections?
 e <- grepl(' to ', x$Nodes, fixed = TRUE) & x$Hops != ''
 idx <- which(e)
 x[idx, ]
 
 
-# I think that these are successfull routes
+# I think that these are successful routes
 e <- grepl('traceroute', x$Type, ignore.case = TRUE) & x$Hops != ''
 idx <- which(e)
 x[idx, ]
@@ -41,8 +44,8 @@ x[idx, ]
 
 
  
-# keep successful routes ----
-e <- grepl('traceroute', x$Type, ignore.case = TRUE) & x$Hops != ''
+# keep successful routes, ignore MQTT ----
+e <- grepl('traceroute', x$Type, ignore.case = TRUE) & x$Hops != '' & x$SNR != 'MQTT'
 idx <- which(e)
 z <- x[idx, ]
 
@@ -73,6 +76,18 @@ par(mar = c(0, 0, 0, 0))
 
 set.seed(1010101)
 plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, vertex.label.cex = 0.66, edge.arrow.size = 0.5, edge.color = 'royalblue', layout = layout_with_dh)
+title('Sierra and Surrounding Meshtastic Network', line = -1.5, sub = 'excluding MQTT')
+
+
+ragg::agg_png(filename = 'figures/sierra-ms-log-graph-01.png', width = 900, height = 900, scaling = 1.5)
+
+par(mar = c(0, 0, 0, 0))
+
+set.seed(1010101)
+plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, vertex.label.cex = 0.66, edge.arrow.size = 0.5, edge.color = 'royalblue', layout = layout_with_dh)
+title('Sierra and Surrounding Meshtastic Network', line = -1.5, sub = 'excluding MQTT')
+
+dev.off()
 
 
 
