@@ -1,12 +1,16 @@
 
 
 ## CLI tools
- - https://github.com/iandennismiller/fmesh
  - https://github.com/pdxlocations/contact
+ - https://github.com/iandennismiller/fmesh
  - https://github.com/ethzero/meshtastic-live-node-list
  - https://www.reddit.com/r/meshtastic/comments/190bw6c/guide_to_install_the_python_cli_and_configure/
  - https://github.com/datagod/meshwatch
  - https://meshtastic.org/docs/software/linux/usage/
+
+## Node DB
+ - https://github.com/pdxlocations/meshdb
+
 
 ## setup meshtastic CLI
  - https://meshtastic.org/docs/software/python/cli/
@@ -18,6 +22,18 @@
  - dump node DB: meshtastic --nodes > file
  - https://vftp.net/N0ZYC/radio/meshtastic/nodes/node%20resources/meshtastic%20CLI/
 
+## Ubuntu Python Modules
+ - python3 -m venv .python-env
+ - add "~/.python-env/bin" to PATH 
+ - .python-env/bin/pip install --upgrade pytap2
+ - .python-env/bin/pip install --upgrade "meshtastic[cli]"
+ - .python-env/bin/pip install "contact"
+ - .python-env/bin/pip install "meshdb"
+
+## python meshtastic module
+ - https://github.com/pdxlocations/Meshtastic-Python-Examples/blob/main/print-traceroute.py
+ - https://github.com/brad28b/meshtastic-cli-receive-text/blob/main/read_messages_serial.py
+ - https://skylosblog.com/posts/meshtastic-client-code/
 
 ## Ideas
  - long-term monitoring -> logging -> analysis
