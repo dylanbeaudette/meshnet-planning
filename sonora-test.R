@@ -86,8 +86,24 @@ par(mar = c(0, 0, 0, 0))
 set.seed(1010101)
 plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, layout = layout_as_star)
 
+plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, layout = layout_as_tree)
+
+
 set.seed(1010101)
 plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, vertex.label.cex = 0.66, edge.arrow.size = 0.25, edge.color = 'royalblue')
+
+
+ragg::agg_png(filename = 'figures/sierra-viewshed-estimate.png', width = 900, height = 900, scaling = 1.5)
+
+par(mar = c(0, 0, 0, 0))
+
+set.seed(1010101)
+plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, vertex.label.cex = 0.66, edge.arrow.size = 0.25, edge.color = 'royalblue')
+
+title('Sierra Meshtastic Network', line = -1.5, sub = 'links defined by viewshed')
+
+dev.off()
+
 
 
 s <- sum(x)
