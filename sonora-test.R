@@ -73,6 +73,9 @@ dimnames(m)[[2]] <- v$node
 
 saveRDS(m, file = 'local-data/pts-adjmat.rds')
 
+# m <- readRDS('local-data/pts-adjmat.rds')
+
+
 
 g <- graph_from_adjacency_matrix(m, mode = 'lower', diag = FALSE, weighted = TRUE)
 
@@ -84,7 +87,7 @@ set.seed(1010101)
 plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, layout = layout_as_star)
 
 set.seed(1010101)
-plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2)
+plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, vertex.label.cex = 0.66, edge.arrow.size = 0.25, edge.color = 'royalblue')
 
 
 s <- sum(x)
