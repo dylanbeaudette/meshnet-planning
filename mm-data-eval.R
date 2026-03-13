@@ -21,6 +21,9 @@ db <- db[, c('User', 'ID', 'AKA', 'Role', 'Latitude', 'Longitude')]
 db <- unique(db)
 nrow(db)
 
+# known local nodes ----
+nl <- read.csv('local-nodes.csv')
+
 
 # review contents ----
 # looks like the entire time period is represented
@@ -113,35 +116,27 @@ e <- e[idx, ]
 
 
 # create and style graph ----
-g <- graph_from_edgelist(e, directed = TRUE)
+# treat trace routes as bi-directional links
+g <- graph_from_edgelist(e, directed = FALSE)
 
 # remove loops
 g <- simplify(g)
 
-# # lookup names
-# nm <- V(g)$name
-# # just IDs to convert
-# n <- nm[grep('^[!]', nm)]
-# 
-# # replace IDs with names
-# idx <- na.omit(match(n, db$ID))
-# lut <- db[idx, c('ID', 'AKA')]
-# 
-# nm[match(lut$ID, nm)] <- lut$AKA
-# V(g)$name <- nm
-
 # size ~ connectivity
 V(g)$size <- sqrt(degree(g)) * 7
 
+# highlight local network
+V(g)$label.font <- 1
+V(g)$label.font[which(V(g)$name %in% nl$node)] <- 2
 
 par(mar = c(0, 0, 0, 0))
 
 set.seed(1010101)
-plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, vertex.label.cex = 0.66, edge.arrow.size = 0.25, edge.color = 'royalblue', layout = layout_with_dh)
+plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.cex = 0.66, edge.color = 'royalblue', layout = layout_with_dh)
 title('Sierra and Surrounding Meshtastic Network', line = -1.5, sub = 'excluding MQTT')
 
 
-plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, vertex.label.cex = 0.66, edge.arrow.size = 0.25, edge.color = 'royalblue', layout = layout_as_tree)
+plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, vertex.label.cex = 0.66, edge.color = 'royalblue', layout = layout_as_tree)
 
 
 
@@ -151,7 +146,7 @@ ragg::agg_png(filename = 'figures/sierra-ms-log-graph-01.png', width = 1200, hei
 par(mar = c(0, 0, 0, 0))
 
 set.seed(1010101)
-plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, vertex.label.cex = 0.66, edge.arrow.size = 0.5, edge.color = 'royalblue', layout = layout_with_dh)
+plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.cex = 0.66, edge.arrow.size = 0.25, edge.color = 'royalblue', layout = layout_with_dh)
 title('Sierra and Surrounding Meshtastic Network', line = -1.5, sub = 'excluding MQTT')
 
 dev.off()

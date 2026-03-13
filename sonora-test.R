@@ -18,9 +18,8 @@ library(igraph)
 v <- read.csv('local-nodes.csv')
 
 v <- vect(v, geom = c('long', 'lat'), crs = 'epsg:4326')
-v <- project(v, crs(e.utm))
-v$height_m <- v$height_ft * 0.3048
-
+v <- project(v, 'epsg:32610')
+ 
 write_VECT(v, vname = 'pts', flags = 'overwrite')
 
 # extract coordinates for r.viewshed
@@ -79,7 +78,7 @@ saveRDS(m, file = 'local-data/pts-adjmat.rds')
 
 g <- graph_from_adjacency_matrix(m, mode = 'lower', diag = FALSE, weighted = TRUE)
 
-V(g)$size <- sqrt(degree(g)) * 20
+V(g)$size <- sqrt(degree(g)) * 10
 
 par(mar = c(0, 0, 0, 0))
 
@@ -90,7 +89,7 @@ plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color
 
 
 set.seed(1010101)
-plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, vertex.label.cex = 0.66, edge.arrow.size = 0.25, edge.color = 'royalblue')
+plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, vertex.label.cex = 0.66, edge.arrow.size = 0.25, edge.color = 'royalblue', )
 
 
 ragg::agg_png(filename = 'figures/sierra-viewshed-estimate.png', width = 900, height = 900, scaling = 1.5)
