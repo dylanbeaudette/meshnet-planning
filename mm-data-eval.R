@@ -145,11 +145,17 @@ ragg::agg_png(filename = 'figures/sierra-ms-log-graph-01.png', width = 1200, hei
 
 par(mar = c(0, 0, 0, 0))
 
-set.seed(1010101)
+# set.seed(1010101)
 plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.cex = 0.66, edge.arrow.size = 0.25, edge.color = 'royalblue', layout = layout_with_dh)
 title('Sierra and Surrounding Meshtastic Network', line = -1.5, sub = 'excluding MQTT')
 
 dev.off()
+
+
+# TODO: do something fun with traceroute data
+cat(z$Data)
+
+
 
 
 

@@ -27,7 +27,7 @@ The [MeshSense](https://affirmatech.com/meshsense) tool was used to collect trac
 
 ![](figures/sierra-ms-log-graph-01.png)
 
-
+![](figures/traceroute-art.png)
 
 # Meshtastic CLI
 
