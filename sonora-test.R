@@ -15,9 +15,15 @@ library(igraph)
 # v <- read_VECT('pts')
 
 ## real coordinates
-v <- read.csv('local-nodes.csv')
+# manually edit to remove inactive nodes
+v <- read.csv('SIERRA Meshtastic Node Locations - Node Locations.csv')
 
-v <- vect(v, geom = c('long', 'lat'), crs = 'epsg:4326')
+# subset, re-name
+v <- v[, c('Short.Name', 'Lat', 'Lon', 'AGL')]
+v$node <- v$Short.Name
+
+
+v <- vect(v, geom = c('Lon', 'Lat'), crs = 'epsg:4326')
 v <- project(v, 'epsg:32610')
  
 write_VECT(v, vname = 'pts', flags = 'overwrite')
@@ -41,7 +47,7 @@ walk(1:n, .progress = TRUE, .f = function(i) {
     output = .map, 
     coordinates = .coords, 
     observer_elevation = 3, 
-    target_elevation = 2, 
+    target_elevation = v$AGL[i], 
     ignore.stderr = TRUE
   )
 })
@@ -78,7 +84,9 @@ saveRDS(m, file = 'local-data/pts-adjmat.rds')
 
 g <- graph_from_adjacency_matrix(m, mode = 'lower', diag = FALSE, weighted = TRUE)
 
-V(g)$size <- sqrt(degree(g)) * 10
+g <- simplify(g)
+
+V(g)$size <- sqrt(degree(g)) * 8
 
 par(mar = c(0, 0, 0, 0))
 
@@ -89,7 +97,7 @@ plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color
 
 
 set.seed(1010101)
-plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, vertex.label.cex = 0.66, edge.arrow.size = 0.25, edge.color = 'royalblue', )
+plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, vertex.label.cex = 0.66, edge.arrow.size = 0.25, edge.color = 'royalblue')
 
 
 ragg::agg_png(filename = 'figures/sierra-viewshed-estimate.png', width = 900, height = 900, scaling = 1.5)
@@ -119,11 +127,12 @@ plot(v, axes = FALSE, type = 'n')
 
 for(i in 1:nrow(el)) {
   .el <- el[i, ]
+  .nodeidx <- match(.el, v$node)
   segments(
-    x0 = xy[.el[1], 1], 
-    y0 = xy[.el[1], 2],
-    x1 = xy[.el[2], 1], 
-    y1 = xy[.el[2], 2]
+    x0 = xy[.nodeidx[1], 1], 
+    y0 = xy[.nodeidx[1], 2],
+    x1 = xy[.nodeidx[2], 1], 
+    y1 = xy[.nodeidx[2], 2]
     )
 }
 

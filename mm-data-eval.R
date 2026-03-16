@@ -93,11 +93,11 @@ for(i in 1:nrow(lut)) {
 
 # grep('!a9e00e2f', z$Data, fixed = TRUE)
 
-
+lattice::dotplot(sort(table(z$Data)))
 
 
 # routes -> matrix
-r <- stri_split_fixed(z$Data, pattern = ' -> ', simplify = FALSE)
+r <- stri_split_fixed(unique(z$Data), pattern = ' -> ', simplify = FALSE)
 
 toEdgeList <- function(i) {
   # reduce to graph edges via sliding window
@@ -131,14 +131,17 @@ V(g)$label.font[which(V(g)$name %in% nl$node)] <- 2
 
 par(mar = c(0, 0, 0, 0))
 
-set.seed(1010101)
-plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.cex = 0.66, edge.color = 'royalblue', layout = layout_with_dh)
+# set.seed(1010101)
+plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.cex = 0.66, edge.color = 'royalblue', layout = layout_with_lgl)
 title('Sierra and Surrounding Meshtastic Network', line = -1.5, sub = 'excluding MQTT')
 
 
 plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, vertex.label.cex = 0.66, edge.color = 'royalblue', layout = layout_as_tree)
 
 
+
+g.sub <- subgraph(g, which(degree(g) > 2))
+plot(g.sub, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.cex = 0.66, edge.color = 'royalblue', layout = layout_with_lgl)
 
 
 ragg::agg_png(filename = 'figures/sierra-ms-log-graph-01.png', width = 1200, height = 1200, scaling = 1.5)
