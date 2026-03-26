@@ -3,7 +3,7 @@
 # * split between stationary / mobile nodes
 # * think about the use / interpretation of edge weights
 # * reset edge weights for nodes used to collect traceroute information
-
+# * min spanning tree
 
 
 library(igraph)
@@ -206,10 +206,18 @@ plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color
 
 plot(g, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', vertex.label.font = 2, edge.color = 'royalblue', layout = layout_as_star)
 
+plot(mst(g), vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', edge.color = 'royalblue', layout = layout_with_lgl)
+title('Sierra and Surrounding Meshtastic Network', line = -1.5, sub = 'excluding MQTT')
+
+
 
 
 g.sub <- subgraph(g, which(degree(g) > 2))
 plot(g.sub, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', edge.color = 'royalblue', layout = layout_with_lgl)
+
+plot(mst(g.sub), vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', edge.color = 'royalblue', layout = layout_with_lgl)
+
+
 
 plot(g.sub, vertex.label.family = 'sans', vertex.color = 'white', vertex.label.color = 'black', edge.color = 'royalblue', layout = layout_as_star)
 
